@@ -1,0 +1,4 @@
+manage.py
+app_repo/
+.DS_store
+*.pyc
