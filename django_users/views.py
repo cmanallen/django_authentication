@@ -1,7 +1,11 @@
+from django.shortcuts import render_to_response
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, RedirectView
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordChangeForm
+from django.utils.decorators import method_decorator
+from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
 from django.conf import settings
 
 
@@ -28,8 +32,8 @@ class LoginUser(FormView):
   def form_invalid(self, form):
     return self.render_to_response(self.get_context_data(form=form))
 
-  def get_success_url(self, form):
-    return reverse('detail-user', kwargs={'pk': form.get_user()})
+  def get_success_url(self):
+    return HttpResponseRedirect('/')
 
 class RegisterUser(CreateView):
   """
@@ -57,3 +61,18 @@ class LogoutUser(RedirectView):
 
   def get_success_url(self):
     return reverse('login-user')
+
+class PasswordChangeUser(FormView):
+  """
+  Updates a user's password field to the entered text
+  """
+  model = AUTH_USER_MODEL
+  template_name = 'change_password.html'
+  form_class = PasswordChangeForm
+
+  @method_decorator(login_required)
+  def dispatch(self, *args, **kwargs):
+    return super(PasswordChangeUser, self).dispatch(*args, **kwargs)
+
+  def get_success_url(self):
+    return HttpResponseRedirect('/')
