@@ -59,14 +59,10 @@ class LogoutUser(LoginRequiredMixin, RedirectView):
   """
   url = reverse_lazy('login-user')
 
-  def get(self, request, *args, **kwargs):
+  def dispatch(self, request, *args, **kwargs):
     url = self.get_redirect_url(*args, **kwargs)
     logout(request)
     return HttpResponseRedirect(url)
-
-def user_logout(request):
-  logout(request)
-  return HttpResponseRedirect('/users/login')
 
 class PasswordChangeUser(LoginRequiredMixin, FormView):
   """
