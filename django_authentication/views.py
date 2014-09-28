@@ -1,7 +1,7 @@
 from django.shortcuts import render_to_response
 from django.views.generic import CreateView, RedirectView, FormView
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordChangeForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordChangeForm, PasswordResetForm
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django_authentication.utils import LoginRequiredMixin
@@ -79,6 +79,22 @@ class PasswordChangeUser(LoginRequiredMixin, FormView):
     kwargs = super(PasswordChangeUser, self).get_form_kwargs()
     kwargs['user'] = self.request.user
     return kwargs
+
+  def get_success_url(self):
+    return reverse('login-user')
+
+class PasswordResetUser(FormView):
+  """
+  Email the user with a reset password
+  """
+  model = AUTH_USER_MODEL
+  template_name = 'reset_password.html'
+  form_class = PasswordResetForm
+
+  def get_context_data(self, *args, **kwargs):
+    context = super(PasswordResetUser, self).get_context_data(*args, **kwargs)
+    context['action'] = reverse('password-reset-user')
+    return context
 
   def get_success_url(self):
     return reverse('login-user')
