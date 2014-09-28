@@ -32,7 +32,7 @@ class LoginUser(FormView):
     login(self.request, form.get_user())
     if self.request.session.test_cookie_worked():
       self.request.session.delete_test_cookie()
-    return HttpResponseRedirect('/')
+    return HttpResponseRedirect(settings.LOGIN_REDIRECT_URL)
 
   def form_invalid(self, form):
     return self.render_to_response(self.get_context_data(form=form))
