@@ -1,14 +1,13 @@
 from django.shortcuts import render_to_response
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, RedirectView
+from django.views.generic import CreateView, RedirectView, FormView
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordChangeForm
-from django.utils.decorators import method_decorator
-from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
+from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
+from django_users.utils import LoginRequiredMixin
+
+
 from django.conf import settings
-
-
 AUTH_USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 
 
@@ -24,16 +23,19 @@ class LoginUser(FormView):
     self.request.session.set_test_cookie()
     return super(LoginUser, self).dispatch(request, *args, **kwargs)
 
+  def get_context_data(self, *args, **kwargs):
+    context = super(LoginUser, self).get_context_data(*args, **kwargs)
+    context['action'] = reverse('login-user')
+    return context
+
   def form_valid(self, form):
     login(self.request, form.get_user())
     if self.request.session.test_cookie_worked():
       self.request.session.delete_test_cookie()
+    return HttpResponseRedirect('/')
 
   def form_invalid(self, form):
     return self.render_to_response(self.get_context_data(form=form))
-
-  def get_success_url(self):
-    return HttpResponseRedirect('/')
 
 class RegisterUser(CreateView):
   """
@@ -44,25 +46,29 @@ class RegisterUser(CreateView):
   form_class = UserCreationForm
 
   def get_context_data(self, *args, **kwargs):
-    context = super(CreateUser, self).get_context_data(*args, **kwargs)
+    context = super(RegisterUser, self).get_context_data(*args, **kwargs)
     context['action'] = reverse('register-user')
     return context
 
   def get_success_url(self):
     return reverse('login-user')
 
-class LogoutUser(RedirectView):
+class LogoutUser(LoginRequiredMixin, RedirectView):
   """
   Simple redirect view that destroys the session
   """
-  def logout(self, request, *args, **kwargs):
+  url = reverse_lazy('login-user')
+
+  def get(self, request, *args, **kwargs):
+    url = self.get_redirect_url(*args, **kwargs)
     logout(request)
-    return super(LogoutUser, self).logout(request, *args, **kwargs)
+    return HttpResponseRedirect(url)
 
-  def get_success_url(self):
-    return reverse('login-user')
+def user_logout(request):
+  logout(request)
+  return HttpResponseRedirect('/users/login')
 
-class PasswordChangeUser(FormView):
+class PasswordChangeUser(LoginRequiredMixin, FormView):
   """
   Updates a user's password field to the entered text
   """
@@ -70,9 +76,13 @@ class PasswordChangeUser(FormView):
   template_name = 'change_password.html'
   form_class = PasswordChangeForm
 
-  @method_decorator(login_required)
   def dispatch(self, *args, **kwargs):
     return super(PasswordChangeUser, self).dispatch(*args, **kwargs)
 
+  def get_form_kwargs(self):
+    kwargs = super(PasswordChangeUser, self).get_form_kwargs()
+    kwargs['user'] = self.request.user
+    return kwargs
+
   def get_success_url(self):
-    return HttpResponseRedirect('/')
+    return reverse('login-user')

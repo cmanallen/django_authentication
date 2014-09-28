@@ -1,0 +1,11 @@
+{% extends 'django_auth.html' %}
+{% block body %}
+  <p>
+    User id: {{ user.id }}
+  </p>
+  <form id="form_id" action="{{ action }}" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <button name="login" type="submit">Login</button>
+  </form>
+{% endblock %}

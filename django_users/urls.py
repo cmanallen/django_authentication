@@ -4,9 +4,11 @@ import django_users.views
 urlpatterns = patterns('',
   # Users
   url(r'^register/$', django_users.views.RegisterUser.as_view(),
-      name='create-user'),
+      name='register-user'),
   url(r'^login/$', django_users.views.LoginUser.as_view(),
-      name='update-user'),
-  url(r'^logout/$', django_users.views.LogoutUser.as_view(),
-      name='delete-user'),
+      name='login-user'),
+  url(r'^logout/$', django_users.views.user_logout,
+      name='logout-user'),
+  url(r'^password/$', django_users.views.PasswordChangeUser.as_view(),
+      name='password-change-user'),
 )
