@@ -2,7 +2,6 @@ from django.conf.urls import patterns, include, url
 import django_authentication.views
 
 urlpatterns = patterns('',
-  # Users
   url(r'^register/$', django_authentication.views.RegisterUser.as_view(),
       name='register-user'),
   url(r'^login/$', django_authentication.views.LoginUser.as_view(),
