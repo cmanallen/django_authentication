@@ -21,11 +21,6 @@ class Login(FormView):
         self.request.session.set_test_cookie()
         return super(Login, self).dispatch(request, *args, **kwargs)
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(Login, self).get_context_data(*args, **kwargs)
-        context['action'] = reverse('login')
-        return context
-
     def form_valid(self, form):
         login(self.request, form.get_user())
         if self.request.session.test_cookie_worked():
@@ -43,11 +38,6 @@ class Register(CreateView):
     model = settings.AUTH_USER_MODEL
     template_name = 'register.html'
     form_class = UserCreationForm
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(Register, self).get_context_data(*args, **kwargs)
-        context['action'] = reverse('register')
-        return context
 
     def get_success_url(self):
         return reverse('login')
@@ -92,11 +82,6 @@ class PasswordReset(FormView):
     model = settings.AUTH_USER_MODEL
     template_name = 'reset_password.html'
     form_class = PasswordResetForm
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(PasswordReset, self).get_context_data(*args, **kwargs)
-        context['action'] = reverse('password-reset')
-        return context
 
     def get_success_url(self):
         return reverse('login')

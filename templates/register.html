@@ -1,6 +1,6 @@
 {% extends 'django_auth.html' %}
 {% block body %}
-  <form id="form_id" action="{{ action }}" method="post">
+  <form id="form_id" action="{% url 'register' %}" method="post">
     {% csrf_token %}
     {{ form.as_ul }}
     <button name="register" type="submit">Register</button>
