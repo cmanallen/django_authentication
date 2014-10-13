@@ -7,14 +7,13 @@ from django_authentication.utils import LoginRequiredMixin
 
 
 from django.conf import settings
-AUTH_USER_MODEL = getattr(settings, 'AUTH_USER_MODEL', 'auth.User')
 
 
 class LoginUser(FormView):
   """
   Logs users with the correct credintials in
   """
-  model = AUTH_USER_MODEL
+  model = settings.AUTH_USER_MODEL
   template_name = 'login.html'
   form_class = AuthenticationForm
 
@@ -40,7 +39,7 @@ class RegisterUser(CreateView):
   """
   Creates an entry in the users model specified in settings.py
   """
-  model = AUTH_USER_MODEL
+  model = settings.AUTH_USER_MODEL
   template_name = 'register.html'
   form_class = UserCreationForm
 
@@ -67,7 +66,7 @@ class PasswordChangeUser(LoginRequiredMixin, FormView):
   """
   Updates a user's password field to the entered text
   """
-  model = AUTH_USER_MODEL
+  model = settings.AUTH_USER_MODEL
   template_name = 'change_password.html'
   form_class = PasswordChangeForm
 
@@ -86,7 +85,7 @@ class PasswordResetUser(FormView):
   """
   Email the user with a reset password
   """
-  model = AUTH_USER_MODEL
+  model = settings.AUTH_USER_MODEL
   template_name = 'reset_password.html'
   form_class = PasswordResetForm
 
