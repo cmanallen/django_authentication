@@ -1,6 +1,5 @@
-from django.shortcuts import render_to_response
 from django.views.generic import CreateView, RedirectView, FormView
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordChangeForm, PasswordResetForm
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
