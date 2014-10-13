@@ -1,12 +1,12 @@
-from django.views.generic import CreateView, RedirectView, FormView
+from django.conf import settings
 from django.contrib.auth import login, logout
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordChangeForm, PasswordResetForm
+from django.contrib.auth.forms import (AuthenticationForm, UserCreationForm,
+                                       PasswordChangeForm, PasswordResetForm)
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
+from django.views.generic import CreateView, RedirectView, FormView
+
 from django_authentication.utils import LoginRequiredMixin
-
-
-from django.conf import settings
 
 
 class LoginUser(FormView):
