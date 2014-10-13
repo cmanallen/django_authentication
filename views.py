@@ -13,6 +13,7 @@ class Login(FormView):
     """
     Logs users with the correct credintials in
     """
+
     model = settings.AUTH_USER_MODEL
     template_name = 'login.html'
     form_class = AuthenticationForm
@@ -35,6 +36,7 @@ class Register(CreateView):
     """
     Creates an entry in the users model specified in settings.py
     """
+
     model = settings.AUTH_USER_MODEL
     template_name = 'register.html'
     form_class = UserCreationForm
@@ -47,12 +49,12 @@ class Logout(LoginRequiredMixin, RedirectView):
     """
     Simple redirect view that destroys the session
     """
+
     url = reverse_lazy('login')
 
-    def dispatch(self, request, *args, **kwargs):
-        url = self.get_redirect_url(*args, **kwargs)
+    def get(self, request, *args, **kwargs):
         logout(request)
-        return HttpResponseRedirect(url)
+        return super(Logout, self).get(request, *args, **kwargs)
 
 
 class PasswordChange(LoginRequiredMixin, FormView):
