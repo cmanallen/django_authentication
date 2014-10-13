@@ -1,7 +1,7 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import url
 import django_authentication.views
 
-urlpatterns = patterns('',
+urlpatterns = [
   url(r'^register/$', django_authentication.views.RegisterUser.as_view(),
       name='register-user'),
   url(r'^login/$', django_authentication.views.LoginUser.as_view(),
@@ -12,4 +12,4 @@ urlpatterns = patterns('',
       name='password-change-user'),
   url(r'^reset/$', django_authentication.views.PasswordResetUser.as_view(),
       name='password-reset-user'),
-)
+]
