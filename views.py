@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django.views.generic import CreateView, RedirectView, FormView
 
-from django_authentication.utils import LoginRequiredMixin
+from .utils import LoginRequiredMixin
 
 
 class LoginUser(FormView):
