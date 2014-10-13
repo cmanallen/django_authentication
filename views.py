@@ -63,9 +63,6 @@ class PasswordChange(LoginRequiredMixin, FormView):
     template_name = 'change_password.html'
     form_class = PasswordChangeForm
 
-    def dispatch(self, *args, **kwargs):
-        return super(PasswordChange, self).dispatch(*args, **kwargs)
-
     def get_form_kwargs(self):
         kwargs = super(PasswordChange, self).get_form_kwargs()
         kwargs['user'] = self.request.user
