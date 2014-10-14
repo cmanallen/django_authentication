@@ -3,7 +3,7 @@
   <p>
     User id: {{ user.id }}
   </p>
-  <form id="form_id" action="{{ action }}" method="post">
+  <form id="form_id" action="{% url 'login' %}" method="post">
     {% csrf_token %}
     {{ form }}
     <button name="login" type="submit">Login</button>

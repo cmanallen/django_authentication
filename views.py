@@ -6,25 +6,21 @@ from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django.views.generic import CreateView, RedirectView, FormView
 
-from .utils import LoginRequiredMixin
+from .mixins import LoginRequiredMixin
 
 
-class LoginUser(FormView):
+class LoginView(FormView):
     """
     Logs users with the correct credintials in
     """
+
     model = settings.AUTH_USER_MODEL
     template_name = 'login.html'
     form_class = AuthenticationForm
 
     def dispatch(self, request, *args, **kwargs):
         self.request.session.set_test_cookie()
-        return super(LoginUser, self).dispatch(request, *args, **kwargs)
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(LoginUser, self).get_context_data(*args, **kwargs)
-        context['action'] = reverse('login-user')
-        return context
+        return super(LoginView, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         login(self.request, form.get_user())
@@ -36,36 +32,32 @@ class LoginUser(FormView):
         return self.render_to_response(self.get_context_data(form=form))
 
 
-class RegisterUser(CreateView):
+class RegisterView(CreateView):
     """
     Creates an entry in the users model specified in settings.py
     """
+
     model = settings.AUTH_USER_MODEL
     template_name = 'register.html'
     form_class = UserCreationForm
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(RegisterUser, self).get_context_data(*args, **kwargs)
-        context['action'] = reverse('register-user')
-        return context
-
     def get_success_url(self):
-        return reverse('login-user')
+        return reverse('login')
 
 
-class LogoutUser(LoginRequiredMixin, RedirectView):
+class LogoutView(LoginRequiredMixin, RedirectView):
     """
     Simple redirect view that destroys the session
     """
-    url = reverse_lazy('login-user')
 
-    def dispatch(self, request, *args, **kwargs):
-        url = self.get_redirect_url(*args, **kwargs)
+    url = reverse_lazy('login')
+
+    def get(self, request, *args, **kwargs):
         logout(request)
-        return HttpResponseRedirect(url)
+        return super(LogoutView, self).get(request, *args, **kwargs)
 
 
-class PasswordChangeUser(LoginRequiredMixin, FormView):
+class PasswordChangeView(LoginRequiredMixin, FormView):
     """
     Updates a user's password field to the entered text
     """
@@ -73,19 +65,16 @@ class PasswordChangeUser(LoginRequiredMixin, FormView):
     template_name = 'change_password.html'
     form_class = PasswordChangeForm
 
-    def dispatch(self, *args, **kwargs):
-        return super(PasswordChangeUser, self).dispatch(*args, **kwargs)
-
     def get_form_kwargs(self):
-        kwargs = super(PasswordChangeUser, self).get_form_kwargs()
+        kwargs = super(PasswordChangeView, self).get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
 
     def get_success_url(self):
-        return reverse('login-user')
+        return reverse('login')
 
 
-class PasswordResetUser(FormView):
+class PasswordResetView(FormView):
     """
     Email the user with a reset password
     """
@@ -93,10 +82,5 @@ class PasswordResetUser(FormView):
     template_name = 'reset_password.html'
     form_class = PasswordResetForm
 
-    def get_context_data(self, *args, **kwargs):
-        context = super(PasswordResetUser, self).get_context_data(*args, **kwargs)
-        context['action'] = reverse('password-reset-user')
-        return context
-
     def get_success_url(self):
-        return reverse('login-user')
+        return reverse('login')
