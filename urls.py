@@ -1,12 +1,12 @@
 from django.conf.urls import url
 
-from .views import Register, Login, Logout, PasswordChange, PasswordReset
+from . import views
 
 
 urlpatterns = [
-    url(r'^register/$', Register.as_view(), name='register'),
-    url(r'^login/$', Login.as_view(), name='login'),
-    url(r'^logout/$', Logout.as_view(), name='logout'),
-    url(r'^password/$', PasswordChange.as_view(), name='password-change'),
-    url(r'^reset/$', PasswordReset.as_view(), name='password-reset'),
+    url(r'^register/$', views.RegisterView.as_view(), name='register'),
+    url(r'^login/$', views.LoginView.as_view(), name='login'),
+    url(r'^logout/$', views.LogoutView.as_view(), name='logout'),
+    url(r'^password/$', views.PasswordChangeView.as_view(), name='password-change'),
+    url(r'^reset/$', views.PasswordResetView.as_view(), name='password-reset'),
 ]

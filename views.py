@@ -9,7 +9,7 @@ from django.views.generic import CreateView, RedirectView, FormView
 from .mixins import LoginRequiredMixin
 
 
-class Login(FormView):
+class LoginView(FormView):
     """
     Logs users with the correct credintials in
     """
@@ -20,7 +20,7 @@ class Login(FormView):
 
     def dispatch(self, request, *args, **kwargs):
         self.request.session.set_test_cookie()
-        return super(Login, self).dispatch(request, *args, **kwargs)
+        return super(LoginView, self).dispatch(request, *args, **kwargs)
 
     def form_valid(self, form):
         login(self.request, form.get_user())
@@ -32,7 +32,7 @@ class Login(FormView):
         return self.render_to_response(self.get_context_data(form=form))
 
 
-class Register(CreateView):
+class RegisterView(CreateView):
     """
     Creates an entry in the users model specified in settings.py
     """
@@ -45,7 +45,7 @@ class Register(CreateView):
         return reverse('login')
 
 
-class Logout(LoginRequiredMixin, RedirectView):
+class LogoutView(LoginRequiredMixin, RedirectView):
     """
     Simple redirect view that destroys the session
     """
@@ -54,10 +54,10 @@ class Logout(LoginRequiredMixin, RedirectView):
 
     def get(self, request, *args, **kwargs):
         logout(request)
-        return super(Logout, self).get(request, *args, **kwargs)
+        return super(LogoutView, self).get(request, *args, **kwargs)
 
 
-class PasswordChange(LoginRequiredMixin, FormView):
+class PasswordChangeView(LoginRequiredMixin, FormView):
     """
     Updates a user's password field to the entered text
     """
@@ -66,7 +66,7 @@ class PasswordChange(LoginRequiredMixin, FormView):
     form_class = PasswordChangeForm
 
     def get_form_kwargs(self):
-        kwargs = super(PasswordChange, self).get_form_kwargs()
+        kwargs = super(PasswordChangeView, self).get_form_kwargs()
         kwargs['user'] = self.request.user
         return kwargs
 
@@ -74,7 +74,7 @@ class PasswordChange(LoginRequiredMixin, FormView):
         return reverse('login')
 
 
-class PasswordReset(FormView):
+class PasswordResetView(FormView):
     """
     Email the user with a reset password
     """
