@@ -1,12 +1,14 @@
 from django.conf import settings
 from django.contrib.auth import login, logout
-from django.contrib.auth.forms import (AuthenticationForm, UserCreationForm,
-                                       PasswordChangeForm, PasswordResetForm)
+from django.contrib.auth.forms import (AuthenticationForm,
+                                       PasswordChangeForm, 
+                                       PasswordResetForm)
 from django.core.urlresolvers import reverse, reverse_lazy
 from django.http import HttpResponseRedirect
 from django.views.generic import CreateView, RedirectView, FormView
 
 from .mixins import LoginRequiredMixin
+from .forms import RegisterForm
 
 
 class LoginView(FormView):
@@ -39,7 +41,7 @@ class RegisterView(CreateView):
 
     model = settings.AUTH_USER_MODEL
     template_name = 'register.html'
-    form_class = UserCreationForm
+    form_class = RegisterForm
 
     def get_success_url(self):
         return reverse('login')
