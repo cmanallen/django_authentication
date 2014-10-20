@@ -15,8 +15,6 @@ class LoginView(FormView):
     """
     Logs users with the correct credintials in
     """
-
-    model = settings.AUTH_USER_MODEL
     template_name = 'login.html'
     form_class = AuthenticationForm
 
@@ -38,8 +36,6 @@ class RegisterView(CreateView):
     """
     Creates an entry in the users model specified in settings.py
     """
-
-    model = settings.AUTH_USER_MODEL
     template_name = 'register.html'
     form_class = RegisterForm
 
@@ -51,7 +47,6 @@ class LogoutView(LoginRequiredMixin, RedirectView):
     """
     Simple redirect view that destroys the session
     """
-
     url = reverse_lazy('login')
 
     def get(self, request, *args, **kwargs):
@@ -63,7 +58,6 @@ class PasswordChangeView(LoginRequiredMixin, FormView):
     """
     Updates a user's password field to the entered text
     """
-    model = settings.AUTH_USER_MODEL
     template_name = 'change_password.html'
     form_class = PasswordChangeForm
 
@@ -80,7 +74,6 @@ class PasswordResetView(FormView):
     """
     Email the user with a reset password
     """
-    model = settings.AUTH_USER_MODEL
     template_name = 'reset_password.html'
     form_class = PasswordResetForm
 
